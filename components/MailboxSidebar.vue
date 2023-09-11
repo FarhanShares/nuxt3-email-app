@@ -1,3 +1,9 @@
+<script lang="ts" setup>
+import { useMailStore } from '~/stores/mail'
+
+const mailStore = useMailStore()
+</script>
+
 <template>
     <aside class="sidebar">
         <div class="sidebar__header">
@@ -16,7 +22,7 @@
                             stroke="#121829" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span> Inbox </span>
-                    <!-- <span> {{ inboxCount }} </span> -->
+                    <span> {{ mailStore.getInbox.length }} </span>
                 </NuxtLink>
                 <NuxtLink to="/archive" class="sidebar__menu-item" active-class="sidebar__menu-item--active">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,7 +31,7 @@
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span> Archive </span>
-                    <!-- <span>{{ archiveCount }}</span> -->
+                     <span> {{ mailStore.getArchive.length }} </span>
                 </NuxtLink>
             </div>
         </div>
