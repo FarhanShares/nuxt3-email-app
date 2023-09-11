@@ -29,8 +29,8 @@ export const useMailStore = defineStore("mailStore", () => {
      * @param to Mailbox
      * @returns void
      */
-    const moveTo = (mailId: Mail["id"], to: Mailbox = MAILBOX_ARCHIVE) => {
-        if (!(mailId in mails.value)) return
+    const moveTo = (mailId?: Mail["id"], to: Mailbox = MAILBOX_ARCHIVE) => {
+        if (!mailId || !(mailId in mails.value)) return
 
         mails.value[mailId].mailbox = to
     }
@@ -42,8 +42,8 @@ export const useMailStore = defineStore("mailStore", () => {
      * @param flag
      * @returns void
      */
-    const markAsRead = (mailId: Mail["id"], flag = true) => {
-        if (!(mailId in mails.value)) return
+    const markAsRead = (mailId?: Mail["id"], flag = true) => {
+        if (!mailId || !(mailId in mails.value)) return
 
         mails.value[mailId].isRead = flag;
     }

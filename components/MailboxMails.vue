@@ -24,28 +24,44 @@ const getPageTitle = computed(() => props.type === MAILBOX_INBOX
     : 'Others'
 )
 
-const open = (mail: Mail, event: MouseEvent) => {
+const onOpen = (mail: Mail, event: MouseEvent) => {
   if ((event.target as HTMLElement).nodeName === 'INPUT') return
 
   openedMail.value = mail
   mailStore.markAsRead(openedMail.value.id)
 }
 
-const close = () => openedMail.value = null
+const onClose = () => openedMail.value = null
+
+const onMarkAsRead = () => mailStore.markAsRead(openedMail.value?.id)
+
+const onArchive = () => {
+  mailStore.moveTo(openedMail.value?.id, MAILBOX_ARCHIVE)
+  onClose()
+}
 
 // keyboard shortcuts
 const handleKeyPress = (event: Event) => {
   if (event instanceof KeyboardEvent) {
     if (event.key === 'a') {
+      if (openedMail.value) {
+        mailStore.moveTo(openedMail.value.id, MAILBOX_ARCHIVE)
+        onClose()
+      }
+
       mailStore.moveToArchiveFromSelected()
     }
 
     if (event.key === 'r') {
+      if (openedMail.value) {
+        mailStore.markAsRead(openedMail.value.id)
+      }
+
       mailStore.markAsReadFromSelected(props.type)
     }
 
     if (event.key === 'Escape') {
-      close()
+      onClose()
     }
   }
 }
@@ -96,7 +112,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeyPress))
 
   <ul class="mailbox-view__content">
     <li v-for="mail in mailStore.getMailboxes[props.type]" :key="mail.id" class="mailbox-view__content__item"
-        :class="{ 'mailbox-view__content__item--read': mails[mail.id].isRead }" @click="open(mail, $event)"
+        :class="{ 'mailbox-view__content__item--read': mails[mail.id].isRead }" @click="onOpen(mail, $event)"
     >
         <input type="checkbox" v-model="mails[mail.id].isSelected" />
         <span>{{ mail.subject }}</span>
@@ -106,8 +122,8 @@ onBeforeUnmount(() => window.removeEventListener('keydown', handleKeyPress))
   <MailboxDrawer
     :mail="openedMail"
     :is-shown="Boolean(openedMail)"
-    @closed="close"
-    @archive="() => {}"
-    @markAsRead="() => {}"
+    @closed="onClose"
+    @archive="onArchive"
+    @markAsRead="onMarkAsRead"
   />
 </template>
