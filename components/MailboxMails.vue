@@ -46,7 +46,7 @@ const handleKeyPress = (event: Event) => {
     if (event.key === 'a') {
       if (openedMail.value) {
         mailStore.moveTo(openedMail.value.id, MAILBOX_ARCHIVE)
-        onClose()
+        props.type === MAILBOX_INBOX && onClose()
       }
 
       mailStore.moveToArchiveFromSelected()
